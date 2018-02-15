@@ -1,0 +1,21 @@
+(*TODO
+	
+	Trouver un moyen propre d'associer un couple (aspect,target) a un olog source, parce que ici c'est du bidouillage
+	que la fonction relation puisse par exemple, trouver toute seule et afficher toute les relations et olog target d'un olog source
+	Exemple : 
+
+	relation olog_father;;
+	#
+		a father is a man
+		a father is a person
+		a father has a set of childs
+
+	Trouver un vrai moyen de représenter des ologs :  classe ? enregistrement ?
+	coder les parcours de graphes/ologs.
+	Trouver une structure de donnée qui faciliteras a terme la transformation en schéma de base de données.
+
+	Trouver des algos pour : détéction de fact (ologs commutatif), génération de pullbacks, detecter les relations injective, produit cartesien
+
+	Lire un fichier et reflechir a la structure du fichier : simple et pas chiant comme les langages de balisage (xml/html)
+
+	*)
