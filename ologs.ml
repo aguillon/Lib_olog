@@ -19,4 +19,11 @@ let (=>) name obj = {default with name = name; aspects = [Is, obj]}
 let a_woman = "a woman" => a_person
 let a_mother = "a mother" => a_woman
 
+let is_ x = {default with name = ""; aspects = [(Is, x)]}
+let rel s target = {default with name = ""; aspects = [(Symbolic s, target)]}
+
+let (<$>) name object_ = {default with name = name; aspects = object_.aspects}
+let (<*>) obj1 obj2 = {default with name = obj1.name; aspects = obj1.aspects @ obj2.aspects}
+
+let a_mother = "a mother" <$> is_ a_woman <*> rel "has a first child" a_person
 
