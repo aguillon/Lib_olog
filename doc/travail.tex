@@ -1,0 +1,115 @@
+\documentclass[a4paper]{scrartcl}
+
+% Compile avec `xelatex travail.tex`
+
+\usepackage{polyglossia}
+\setdefaultlanguage{french}
+\usepackage{unicode-math}
+\usepackage{fontspec}
+
+\setmainfont[Ligatures=Rare]{Linux Libertine O}
+
+
+
+\usepackage[backend=biber,style=authoryear-comp,uniquename=init,firstinits=true,
+            uniquelist=false,maxcitenames=2,mincitenames=1,maxbibnames=99,
+            isbn=false,url=false,doi=false
+]{biblatex}
+
+\renewcommand{\cite}{\parencite}
+\renewcommand*{\nameyeardelim}{\addcomma \addnbspace}
+\renewcommand*{\revsdnamedelim}{}
+\renewcommand*\finalnamedelim{ \& }
+
+\DefineBibliographyExtras{french}{\restorecommand\mkbibnamelast}
+
+\DeclareNameAlias{default}{last-first}
+\DeclareNameAlias{sortname}{last-first}
+
+% Supprimer les guillemets dans les titres
+\DeclareFieldFormat[article,incollection,unpublished,inproceedings]{title}{#1}
+
+\usepackage{xpatch}
+\usepackage{xstring}
+
+\renewbibmacro*{series+number}{%
+  \setunit*{\addnbspace}%
+  \printfield{series}%
+  \printfield{number}%
+  \newunit}
+
+\xpatchbibmacro{textcite}{\addcoma}{}{}{}
+
+\addbibresource{./references.bib}
+
+
+\begin{document}
+
+\title{Une bibliothèque pour la manipulation d'ontologies formelles}
+\subtitle{Document de travail}
+
+\maketitle
+
+\abstract{Ce document présente les fonctionnalités à implémenter dans la
+  bibliothèque, ainsi que des pistes de développement orientées vers le
+  \emph{data mining}. Bien que ce projet soit avant tout un projet scolaire, les
+  contributions extérieures sont les bienvenues.}
+
+\section{Introduction}
+
+La représentation des connaissances est un domaine de l'Intelligence
+Artificielle visant à structurer des informations sur le monde pouvant être
+utilisées dans des applications de haut niveau. Ces représentations peuvent
+ensuite être visualisées, comparées entre elles ou encore utilisées pour le
+raisonnement automatique \cite{brachman-knowledge-representation}.
+
+\textcite{spivak-ologs} introduisent les «\emph{ontology logs}» (ou « ologs »),
+une nouvelle représentation des connaissances qui se base sur la théorie des
+catégories pour structurer les ontologies. Celles-ci sont décrites sous forme de
+types (objets) et d'aspects (flèches entre les objets) et font intervenir les
+constructions usuelles des catégories : diagrammes commutatifs (égalité entre
+deux aspects), produits, etc.
+
+La présente bibliothèque vise à proposer une implémentation simple des ologs
+qui sera par la suite appliquée à la fouille de données.
+
+\section{Fonctionnalités}
+
+La bibliothèque devra proposer les fonctionnalités suivantes :
+\begin{itemize}
+  \item représentation, enregistrement et chargement d'ologs ;
+  \item fonctions génériques permettant la création et la modification
+    d'ontologies en OCaml aussi simplement que possible ;
+  \item population d'ontologies simples et vérification automatisée du respect
+    des «faits» déclarés par l'olog ;
+  \item affichage des ontologies dans un format graphique à définir ;
+\end{itemize}
+
+Par la suite, des fonctionnalités avancées pourront être implémentées, telles
+que l'export vers SQL, la génération de code OCaml (façon \emph{type
+providers}) pour la «programmation orientée ontologies» ou l'intégration d'un
+prouveur.
+
+\section{Rappel sur les ologs}
+
+\section{Application au \emph{data mining}}
+
+\subsection{Littérature}
+
+Dans un second temps, la bibliothèque sera appliquée à des problèmes de fouille
+de données (\emph{data mining}). Bien que leur rôle premier soit de représenter
+des connaissances structurées par l'utilisateur même, les ontologies ont déjà
+été appliquées par plusieurs auteurs à différentes tâches de la fouille de
+données telles la recherche de motifs ou le clustering.
+
+Une application récurrente des ontologies au clustering consiste à raffiner les
+distances et méthodes de pondération utilisées pour tenir compte d'informations
+sémantiques et améliorer les performances du clustering, ou au contraire tenir
+compte de la subjectivité des utilisateurs. Par exemple en clustering de
+documents textes, \textcite{hotho-ontology-clustering} utilisent un graphe
+d'ontologies (une hétérarchie plutôt qu'une hiérarchie) afin de trouver des
+concepts adaptés à la description des différents clusters.
+
+\printbibliography
+
+\end{document}
