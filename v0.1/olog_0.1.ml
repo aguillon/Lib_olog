@@ -1,17 +1,24 @@
 (*
-	Bonne pratique : 
+	 
 
-	La flèche provenant d'un olog (un 'aspect') et allant vers un autr e olog
-	
+	Un "olog" c'est tout un graphe (objets + flèches) 
+	+ des "faits". 
+	Les flèches (ou "aspects" dans la terminologie des ologs) vont d'un objet vers un autre.
+
+	Bonne pratique :
+
+	Les aspects
+
 	1/
 		doit commencer par un verbe.
 	2/
-		doit avoir sa description est en français.
+		doit avoir sa description est en anglais.
 	3/
 		Doit décrire une relation fonctionnelle entre le domaine source et le domaine visé
 
 
-	Un olog contient un texte qui le décrit clairement
+	Un objet contient un texte qui le décrit clairement
+	
 	Un olog qui contient au moins 2 chemins équivalent, est commutatif
 
 
@@ -31,28 +38,6 @@
 *)
 
 (*===========================(*CODE*)==============================*)
-
-
-(* non concluant
-
-class olog (name_init) =
-object
-
-	val mutable name = name_init
-	val relations = List.tl [Is,olog]
-
-	method get_nom = name
-	method append_rel (arrow,target) = relations :: [[arrow,target]]
-	(*method is ()
-	method has ()
-	method use ()*)
-end;;
-
-
-let olog = new olog("A Person");;
-olog#get_nom;;*)
-
-
 
 
 type aspect = 
@@ -90,8 +75,6 @@ Olog("a father",Is,[Olog("a Person",Empty,[]);Olog("a man",Is,[Olog("a person",E
 (*Pas vraiment satisfaisant, ça risque d'etre chiant pour les parcours, et syntaxiquement aussi si ont fait des gros olog ça devient illisible*)
 
 
-
-(*olog 0.2*)
 module SS = Set.Make(String)
 
 type olog = {name:string;domain:SS.t;relation:aspect;targets:olog list};;
@@ -103,6 +86,8 @@ let person = SS.singleton "";;
 let person = List.fold_right SS.add ["Akira";"Miyazaki";"Kaneda"] person;; 
 
 let person = SS.union student person;;
+
+
 
 let olog_person = {name = "a person";domain = person;relation = Empty;targets = []};;
 
