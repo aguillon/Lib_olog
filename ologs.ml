@@ -24,11 +24,12 @@ type object_ = {
   role : object_role option
 }
 
-let default = {name = ""; aspects = []; role = None}
+type fact = (int list * int list)
 
-let a_person = {default with name = "a person"; aspects = []}
-let a_man = {default with name = "a man"; aspects = [None,Is, a_person]}
-let a_father = {default with name = "a father"; aspects = [None,Is, a_man; None,Is, a_person]}
+type olog = {
+  objects : object_ list;
+  facts : fact list
+}
 
 let default = {name = ""; aspects = []; role = None}
 
@@ -44,6 +45,23 @@ let (<$>) name object_ = {default with name = name; aspects = object_.aspects}
 let (<*>) obj1 obj2 = {default with name = obj1.name; aspects = obj1.aspects @ obj2.aspects}
 
 let add_target obj type_asp aspect target = obj.aspects <- obj.aspects@[type_asp,aspect,target];;
-let a_woman = "a woman" <$> is_ a_person;; (*pareil que ligne 20, et c'est plus propre avec ton is_ et tout*)
-let a_mother = "a mother" <$> is_ a_woman <*> rel None "has a first child" a_person;;
+
+
+exception Invalid_path
+
+(* Checks that a path exists in a given object *)
+let check_path obj path =
+  try
+    ignore (List.fold_left
+      (fun aspects n ->
+        match List.nth aspects n with
+          | (_, _, obj) -> obj.aspects)
+      obj.aspects
+      path)
+  with Failure _ -> raise Invalid_path
+
+let make_commute obj path1 path2 =
+  check_path obj path1;
+  check_path obj path2;
+  (path1, path2)
 
