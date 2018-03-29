@@ -52,16 +52,19 @@ exception Invalid_path
 (* Checks that a path exists in a given object *)
 let check_path obj path =
   try
-    ignore (List.fold_left
-      (fun aspects n ->
-        match List.nth aspects n with
-          | (_, _, obj) -> obj.aspects)
-      obj.aspects
-      path)
+    List.fold_left
+      (fun o n ->
+        match List.nth o.aspects n with
+          | (_, _, obj) -> obj)
+      obj
+      path
   with Failure _ -> raise Invalid_path
 
 let make_commute obj path1 path2 =
-  check_path obj path1;
-  check_path obj path2;
-  (path1, path2)
+  let obj1 = check_path obj path1 in
+  let obj2 = check_path obj path2 in
+  if obj1 <> obj2 then
+    raise Invalid_path
+  else
+    (path1, path2)
 
