@@ -18,18 +18,15 @@ type object_role =
   | Coproducts
 (* | Pullbacks | Pushouts  To be completed *)
 
-type object_ = {
+type full_aspect = application_type * aspect * object_
+
+and object_ = {
   name : string;
-  mutable aspects : (application_type * aspect * object_) list;
+  mutable aspects : full_aspect list;
   role : object_role option
 }
 
-type fact = (int list * int list)
-
-type olog = {
-  objects : object_ list;
-  facts : fact list
-}
+type diagram = (int list * int list)
 
 let default = {name = ""; aspects = []; role = None}
 
@@ -46,6 +43,10 @@ let (<*>) obj1 obj2 = {default with name = obj1.name; aspects = obj1.aspects @ o
 
 let add_target obj type_asp aspect target = obj.aspects <- obj.aspects@[type_asp,aspect,target];;
 
+type olog = {
+  objects : object_ list;
+  facts : (object_ * diagram) list
+}
 
 exception Invalid_path
 
@@ -54,17 +55,27 @@ let check_path obj path =
   try
     List.fold_left
       (fun o n ->
+        print_endline (string_of_int n);
         match List.nth o.aspects n with
           | (_, _, obj) -> obj)
       obj
       path
   with Failure _ -> raise Invalid_path
 
-let make_commute obj path1 path2 =
+let make_diagram obj path1 path2 =
   let obj1 = check_path obj path1 in
   let obj2 = check_path obj path2 in
-  if obj1 <> obj2 then
+  if obj1 != obj2 then
     raise Invalid_path
   else
-    (path1, path2)
+    (obj, (path1, path2))
+
+let make_olog objects facts =
+  let diagrams =
+    List.map
+      (fun (o, (p1, p2)) ->
+        assert (List.mem o objects);
+        make_diagram o p1 p2)
+      facts
+  in {objects = objects; facts = diagrams}
 
